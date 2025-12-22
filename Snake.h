@@ -12,6 +12,7 @@ private:
     bool game_over;
 
 public:
+    Snake();
     bool play();
 };
 

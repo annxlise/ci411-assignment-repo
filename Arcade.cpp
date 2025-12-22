@@ -2,6 +2,14 @@
 #include <cstdlib>
 #include "Arcade.h"
 #include "ascii.h"
+#include "Pong.h"
+#include "Snake.h"
+#include "Minesweeper.h"
+#include "SpaceInvaders.h"
+#include "Breakout.h"
+
+
+
 
 using namespace std;
 
@@ -40,14 +48,35 @@ void Arcade::run()
     {
         int choice = showArcadeMenu(points, time_remaining);
 
-        cout << "\nplaceholder >:3...\n";
-        cout << "placeholder :3\n";
-        cin.get();
+        Minigame* game = nullptr;
 
-        points += 100;
-        time_remaining -= 30;
+        if (choice == 1)
+            game = new SpaceInvaders();
+        else if (choice == 2)
+            game = new Pong();
+        else if (choice == 3)
+            game = new Minesweeper();
+        else if (choice == 4)
+            game = new Snake();
+        else if (choice == 5)
+            game = new Breakout();
 
-        game_completed[choice - 1] = true;
+        if (game != nullptr)
+        {
+            system("cls");          
+            bool won = game->play(); 
+            system("cls");           
+
+            if (won)
+            {
+                points += 100;
+                game_completed[choice - 1] = true;
+            }
+
+            time_remaining -= 30;
+            delete game;
+        }
+
     }
 
     if (points >= 500)

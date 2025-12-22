@@ -1,4 +1,3 @@
-#pragma once
 #ifndef PONG_H
 #define PONG_H
 
@@ -7,6 +6,7 @@
 class Pong : public Minigame
 {
 public:
+    Pong();
     bool play();
 };
 
