@@ -7,6 +7,7 @@
 class SpaceInvaders : public Minigame
 {
 public:
+    SpaceInvaders();
     bool play();
 };
 
