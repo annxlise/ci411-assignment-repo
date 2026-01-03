@@ -1,12 +1,12 @@
 #pragma once
 #ifndef BREAKOUT_H
 #define BREAKOUT_H
-
-#include "MiniGame.h"
+#include "Minigame.h"
 
 class Breakout : public Minigame
 {
 public:
+    Breakout();
     bool play();
 };
 
