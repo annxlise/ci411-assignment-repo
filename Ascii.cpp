@@ -1,5 +1,6 @@
 #include <iostream>
-#include "ascii.h"
+#include "Ascii.h"
+#include "Arcade.h"
 
 using namespace std;
 
@@ -89,7 +90,13 @@ int showArcadeMenu(int points, int time_remaining)
     cout << "|  4. SNAKE                                                                  |\n";
     cout << "|  5. BREAKOUT                                                               |\n";
     cout << "|                                                                            |\n";
-    cout << "|  POINTS: " << points << " / 500                                                         |\n";
+    if (points >= 100) {
+        cout << "|  POINTS: " << points << " / 500                                                        |\n";
+
+    else {
+        cout << "|  POINTS: " << points << " / 500                                                           |\n";
+
+    }
     cout << "|  TIME LEFT: " << time_remaining << "                                                             |\n";
     cout << "|                                                                            |\n";
     cout << "+----------------------------------------------------------------------------+\n";

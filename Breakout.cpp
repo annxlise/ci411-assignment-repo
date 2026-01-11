@@ -14,7 +14,7 @@ bool Breakout::play()
 
     // paddle
     int paddle_x = width / 2;
-    int paddle_width = 5;  
+    int paddle_width = 7;  
 
     // ball
     int ball_x = width / 2;
@@ -23,7 +23,7 @@ bool Breakout::play()
     int ball_dy = -1;
 
     // bricks
-    int brick_width = 3;
+    int brick_width = 5;
     const int brick_count = 6;
     int brick_x[brick_count] = { 4, 8, 12, 16, 20, 24 };
     int brick_y = 2;
@@ -116,11 +116,12 @@ bool Breakout::play()
         if (ball_y <= 0)
             ball_dy *= -1;
 
-        // paddle bounce
-        if (ball_y == height - 2 && (ball_x == paddle_x || ball_x == paddle_x - 1 || ball_x == paddle_x + 1))
+        // paddle bounce, accepts if the ball hits the corner of the paddle
+        if (ball_y >= height - 2 && ball_x >= paddle_x - paddle_width / 2 && ball_x <= paddle_x + paddle_width / 2)
         {
             ball_dy = -1;
         }
+
 
         // brick collision
         for (int i = 0; i < brick_count; i++)
@@ -162,6 +163,6 @@ bool Breakout::play()
             return true;
         }
 
-        Sleep(130);
+        Sleep(160);
     }
 }

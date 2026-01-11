@@ -20,6 +20,7 @@ bool SpaceInvaders::play()
     // enemies
     const int enemy_cols = 5;
     const int enemy_rows = 2;
+    int enemy_timer = 0;
 
     int enemy_x[enemy_rows][enemy_cols] =
     {
@@ -27,7 +28,7 @@ bool SpaceInvaders::play()
         { 5, 9, 13, 17, 21 }
     };
 
-    int enemy_y[enemy_rows] = { 2, 4 };
+    int enemy_y[enemy_rows] = { 3, 5 };
     bool enemy_alive[enemy_rows][enemy_cols];
 
     for (int r = 0; r < enemy_rows; r++)
@@ -40,9 +41,18 @@ bool SpaceInvaders::play()
     int enemy_dx = 1; // direction
 
     // bullet
-    bool bullet_active = false;
-    int bullet_x = 0;
-    int bullet_y = 0;
+    const int max_bullets = 5;
+
+    bool bullet_active[max_bullets];
+    int bullet_x[max_bullets];
+    int bullet_y[max_bullets];
+
+    for (int i = 0; i < max_bullets; i++)
+    {
+        bullet_active[i] = false;
+    }
+
+
 
     while (true)
     {
@@ -75,11 +85,15 @@ bool SpaceInvaders::play()
                 }
 
                 // bullet
-                if (bullet_active && x == bullet_x && y == bullet_y)
+                for (int i = 0; i < max_bullets; i++)
                 {
-                    cout << "|";
-                    drawn = true;
+                    if (bullet_active[i] && x == bullet_x[i] && y == bullet_y[i])
+                    {
+                        cout << "|";
+                        drawn = true;
+                    }
                 }
+
 
                 if (!drawn)
                 {
@@ -102,12 +116,20 @@ bool SpaceInvaders::play()
             {
                 player_x++;
             }
-            else if (input == ' ' && !bullet_active)
+            else if (input == ' ')
             {
-                bullet_active = true;
-                bullet_x = player_x;
-                bullet_y = height - 2;
+                for (int i = 0; i < max_bullets; i++)
+                {
+                    if (!bullet_active[i])
+                    {
+                        bullet_active[i] = true;
+                        bullet_x[i] = player_x;
+                        bullet_y[i] = height - 2;
+                        break; // only fire one bullet per key press :D
+                    }
+                }
             }
+
             else if (input == 'q' || input == 'Q')
             {
                 return false;
@@ -124,40 +146,83 @@ bool SpaceInvaders::play()
         }
 
         // bullets move
-        if (bullet_active)
+        for (int i = 0; i < max_bullets; i++)
         {
-            bullet_y--;
-            if (bullet_y < 0)
-                bullet_active = false;
+            if (bullet_active[i])
+            {
+                bullet_y[i]--;
+
+                if (bullet_y[i] < 0)
+                {
+                    bullet_active[i] = false;
+                }
+            }
         }
+
 
         // bullet collision
         for (int r = 0; r < enemy_rows; r++)
         {
             for (int c = 0; c < enemy_cols; c++)
             {
-                if (enemy_alive[r][c] && bullet_active && bullet_x == enemy_x[r][c] && bullet_y == enemy_y[r])
+                for (int i = 0; i < max_bullets; i++)
                 {
-                    enemy_alive[r][c] = false;
-                    bullet_active = false;
+                    if (enemy_alive[r][c] &&
+                        bullet_active[i] &&
+                        bullet_x[i] == enemy_x[r][c] &&
+                        bullet_y[i] == enemy_y[r])
+                    {
+                        enemy_alive[r][c] = false;
+                        bullet_active[i] = false;
+                    }
                 }
+
             }
         }
 
         // enemy movement
         bool hit_edge = false;
 
-        for (int r = 0; r < enemy_rows; r++)
+        enemy_timer++;
+
+        if (enemy_timer >= 2) // higher makes it slower and easier
         {
-            for (int c = 0; c < enemy_cols; c++)
+            bool hit_edge = false;
+
+            for (int r = 0; r < enemy_rows; r++)
             {
-                if (enemy_alive[r][c])
+                for (int c = 0; c < enemy_cols; c++)
                 {
-                    if (enemy_x[r][c] <= 0 || enemy_x[r][c] >= width - 1)
-                        hit_edge = true;
+                    if (enemy_alive[r][c])
+                    {
+                        if (enemy_x[r][c] <= 0 || enemy_x[r][c] >= width - 1)
+                        {
+                            hit_edge = true;
+                        }
+                    }
                 }
             }
+
+            if (hit_edge)
+            {
+                enemy_dx *= -1;
+                for (int r = 0; r < enemy_rows; r++)
+                {
+                    enemy_y[r]++;
+                }
+            }
+
+            for (int r = 0; r < enemy_rows; r++)
+            {
+                for (int c = 0; c < enemy_cols; c++)
+                {
+                    enemy_x[r][c] += enemy_dx;
+                }
+            }
+
+            enemy_timer = 0;
         }
+
 
         if (hit_edge)
         {
@@ -183,8 +248,8 @@ bool SpaceInvaders::play()
             {
                 system("cls");
                 cout << "============================\n";
-                cout << "        GAME OVER\n";
-                cout << "   THE INVADERS WON...\n";
+                cout << "          GAME OVER\n";
+                cout << "   FEEL FREE TO TRY AGAIN!\n";
                 cout << "============================\n";
                 cin.get();
                 return false;
@@ -212,6 +277,6 @@ bool SpaceInvaders::play()
             return true;
         }
 
-        Sleep(200);
+        Sleep(130);
     }
 }

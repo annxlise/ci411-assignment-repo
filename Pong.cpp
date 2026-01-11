@@ -27,6 +27,10 @@ bool Pong::play()
     int player_score = 0;
     int npc_score = 0;
 
+    int chance = rand() % 3;
+    int npc_delay = 0;
+
+
 
     while (true)
     {
@@ -40,19 +44,23 @@ bool Pong::play()
             for (int x = 0; x < width; x++)
             {
                 // player
-                if (x == 1 && (y == player_y || y == player_y - 1 || y == player_y + 1))
+                if (x == 1 && (y == player_y || y == player_y - 1 || y == player_y + 1)) {
                     cout << "|";
+                }
 
                 // npc
-                else if (x == width - 2 && (y == npc_y || y == npc_y - 1 || y == npc_y + 1))
+                else if (x == width - 2 && (y == npc_y || y == npc_y - 1 || y == npc_y + 1)) {
                     cout << "|";
+                }
 
                 // ball
-                else if (x == ball_x && y == ball_y)
+                else if (x == ball_x && y == ball_y) {
                     cout << "O";
+                }
 
-                else
+                else {
                     cout << " ";
+                }
             }
             cout << endl;
         }
@@ -78,14 +86,19 @@ bool Pong::play()
         if (player_y > height - 2)
             player_y = height - 2;
 
-        /*
-        npc follows the ball
-        NOTE: currently too hard to win but idk how to make the npc make mistakes yet
-        */
-        if (ball_y < npc_y)
-            npc_y--;
-        else if (ball_y > npc_y)
-            npc_y++;
+        // npc follows the ball w/ a variable for it to delay & not move
+        npc_delay++;
+
+        if (npc_delay >= 4) // bigger number makesi t easier
+        {
+            if (ball_y < npc_y)
+                npc_y--;
+            else if (ball_y > npc_y)
+                npc_y++;
+
+            npc_delay = 0;
+        }
+
 
         // move ball
         ball_x += ball_dx;
@@ -127,7 +140,7 @@ bool Pong::play()
         }
 
         // win condition
-        if (player_score == 3)
+        if (player_score == 5)
         {
             system("cls");
             cout << "==============================\n";
@@ -138,7 +151,7 @@ bool Pong::play()
             return true;
         }
 
-        if (npc_score == 3)
+        if (npc_score == 5)
         {
             system("cls");
             cout << "==============================\n";
